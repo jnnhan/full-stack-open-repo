@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 
 const Header = ({text}) => (
@@ -11,7 +12,16 @@ const Button = (props) => (
 )
 
 const StatisticLine = (props) => (
-  <div>{props.text} {props.value}</div>
+  <div>
+    <table>
+      <tbody>
+        <tr>
+          <td width="75" text-align="left">{props.text}</td>
+          <td width="75" text-align="left">{props.value}</td>
+        </tr> 
+      </tbody>
+    </table>
+  </div>
 )
 
 const Statistics = ({ good, neutral, bad }) => {
@@ -21,7 +31,7 @@ const Statistics = ({ good, neutral, bad }) => {
     return <div>No feedback given</div>
   }
   const average = (good - bad)/all
-  const positive = (good/all)*100 + ' %'
+  const positive = ((good/all)*100).toFixed(1) + '%'
 
   return (
     <>
