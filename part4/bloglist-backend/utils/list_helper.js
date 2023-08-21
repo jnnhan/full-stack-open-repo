@@ -26,6 +26,14 @@ const blogsInDb = async () => {
     return blogs.map(blog => blog.toJSON())
 }
 
+const nonExistingId = async () => {
+    const blog = new Blog({ title: 'Soon to be deleted'})
+    await blog.save()
+    await blog.deleteOne()
+
+    return blog._id.toString()
+}
+
 const latestBlog = async () => {
     const latest = await Blog.findOne().sort({ _id: -1})
     return latest.toJSON()
@@ -67,6 +75,7 @@ const favoriteBlog = (blogs) => {
 module.exports = {
   initialBlogs,
   blogsInDb,
+  nonExistingId,
   latestBlog,
   dummy,
   totalLikes,
