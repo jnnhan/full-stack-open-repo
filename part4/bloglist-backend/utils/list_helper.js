@@ -1,4 +1,9 @@
+const supertest = require('supertest')
+const app = require('../app')
+const api = supertest(app)
+const bcrypt = require('bcrypt')
 const Blog = require("../models/blog")
+const User = require('../models/user')
 
 const initialBlogs = [
     {
@@ -21,9 +26,33 @@ const initialBlogs = [
     }
 ]
 
+const initialUser = async () => {
+    const passwordHash = await bcrypt.hash('salainen', 10)
+    const user = new User ({
+        username: "tester",
+        name: "test testersson",
+        passwordHash: passwordHash
+    })
+
+    await user.save()
+    
+    const loggedInUser = await api.post('/api/login')
+        .send({
+            username: user.username,
+            password: 'salainen'})
+        .expect(200)
+
+    return loggedInUser.body
+}
+
 const blogsInDb = async () => {
     const blogs = await Blog.find({})
     return blogs.map(blog => blog.toJSON())
+}
+
+const usersInDb = async () => {
+    const users = await User.find({})
+    return users.map(user => user.toJSON())
 }
 
 const nonExistingId = async () => {
@@ -74,7 +103,9 @@ const favoriteBlog = (blogs) => {
 
 module.exports = {
   initialBlogs,
+  initialUser,
   blogsInDb,
+  usersInDb,
   nonExistingId,
   latestBlog,
   dummy,

@@ -1,9 +1,11 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vaWxhbmVuIiwiaWQiOiI2NGU1ZjVhOTkwYmMyZmYxZjAyNjYwYmUiLCJpYXQiOjE2OTI4Njc5MTV9.wSAFZyZS5bGW-SDy4kHBS3jeN2yo6tr8KXMwNW1AzMM
+
 
 {
-    "title": "test",
-    "author": "tester",
-    "url": "www.testblog.com",
+    "title": "nice nice nice",
+    "author": "moilanen",
+    "url": "www.testblog.com/nice",
     "likes": 1
 }
