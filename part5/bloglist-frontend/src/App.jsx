@@ -16,6 +16,20 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
+  useEffect(() => {
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs))
+  }, [])
+
   const showNotification = (message, type='info') => {
     if (type === 'error') {
       setError(true)
@@ -36,20 +50,6 @@ const App = () => {
     setAuthor('')
     setUrl('')
   }
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs))
-  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -77,9 +77,41 @@ const App = () => {
     setUser(null)
   }
 
+  const blogForm = () => (
+    <form onSubmit={addBlog}>
+      <div>
+        title:
+        <input
+          type="text"
+          value={title}
+          name="title"
+          onChange={({ target }) => setTitle(target.value)}
+        />
+      </div>
+      <div>
+        author
+        <input
+          type="text"
+          value={author}
+          name="author"
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+      </div>
+      <div>
+        url:
+        <input
+          type="text"
+          value={url}
+          name="url"
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </div>
+      <button type="submit">create</button>
+    </form>
+  )
+
   const addBlog = async (e) => {
     e.preventDefault()
-    console.log('adding new blog')
     const newBlog = {
       title: title,
       author: author,
@@ -92,8 +124,6 @@ const App = () => {
       clearForm()
     } catch (exception) {
       showNotification(exception.message)
-      console.log("something wrong")
-      console.error(exception.message)
     }
   }
 
@@ -117,12 +147,7 @@ const App = () => {
         </button>
 
         <h2>add new blog to the list</h2>
-        <BlogForm
-          addHandler={addBlog}
-          title={title} setTitle={setTitle}
-          author={author} setAuthor={setAuthor}
-          url={url} setUrl={setUrl}
-        />
+        {blogForm()}
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}</div>}
