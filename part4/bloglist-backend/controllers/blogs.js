@@ -2,7 +2,6 @@ const blogRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const blog = require('../models/blog')
 const { userExtractor } = require('../utils/middleware')
 
 blogRouter.get('/', async (request, response) => {
@@ -16,7 +15,9 @@ blogRouter.delete('/:id', userExtractor, async (request, response) => {
   const blogToDelete = await Blog.findById(request.params.id)
 
   if (blogToDelete.user.toString() === user.id.toString()) {
-    await Blog.findByIdAndRemove(request.params.id)
+    user.blogs = user.blogs.filter(blog => blog.toString() !== blogToDelete.id.toString() )
+    await user.save()
+    await blogToDelete.remove()
     response.status(204).end()
   } else {
     console.log("something wrong")
@@ -32,7 +33,7 @@ blogRouter.post('/', userExtractor, async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes || 0,
+    likes: body.likes? body.likes : 0,
     user: user._id
   })
 
