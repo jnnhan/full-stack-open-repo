@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -46,9 +48,6 @@ const App = () => {
   const clearForm = () => {
     setUsername('')
     setPassword('')
-    setTitle('')
-    setAuthor('')
-    setUrl('')
   }
 
   const handleLogin = async (e) => {
@@ -64,6 +63,7 @@ const App = () => {
       )
       blogService.setToken(user.token)
       setUser(user)
+      showNotification(`user ${username} logged in`, "info")
       clearForm()
     } catch (exception) {
       showNotification('wrong credentials', 'error')
@@ -77,60 +77,24 @@ const App = () => {
     setUser(null)
   }
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <div>
-        title:
-        <input
-          type="text"
-          value={title}
-          name="title"
-          onChange={({ target }) => setTitle(target.value)}
-        />
-      </div>
-      <div>
-        author
-        <input
-          type="text"
-          value={author}
-          name="author"
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-      </div>
-      <div>
-        url:
-        <input
-          type="text"
-          value={url}
-          name="url"
-          onChange={({ target }) => setUrl(target.value)}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
-  )
-
-  const addBlog = async (e) => {
-    e.preventDefault()
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url,
-    }
-
+  const addBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     try {
-      const returnedBlog = await blogService.create(newBlog)
+      const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
-      clearForm()
+      showNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, "info")
     } catch (exception) {
       showNotification(exception.message)
     }
   }
 
+  const blogFormRef = useRef()
+
   return (
     <div>
       {!user && <div>
         <h2>log in to application</h2>
+        <Notification message={notification} error={error}/>
         <LoginForm
           loginHandler={handleLogin}
           username={username}
@@ -141,13 +105,16 @@ const App = () => {
       }
       {user && <div>
         <h2>blogs</h2>
+        <Notification message={notification} error={error}/>
         {user.name} logged in
         <button
           onClick={() => handleLogout()}>logout
         </button>
-
-        <h2>add new blog to the list</h2>
-        {blogForm()}
+        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <BlogForm
+            createBlog={addBlog}
+          />
+        </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}</div>}
