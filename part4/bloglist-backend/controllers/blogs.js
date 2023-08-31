@@ -25,6 +25,7 @@ router.post('/', userExtractor, async (request, response) => {
   }
 
   blog.user = user._id
+  await blog.populate('user', { username: 1, name: 1 })
 
   const createdBlog = await blog.save()
 
