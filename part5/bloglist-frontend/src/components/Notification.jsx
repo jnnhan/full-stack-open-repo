@@ -2,10 +2,9 @@ const Notification = ({ message, error }) => {
     if (message === null) {
         return null
     }
-    console.log(message, error)
 
     let className = "notification"
-    if (error) {
+    if (error === "error") {
         className = "error"
     }
 
