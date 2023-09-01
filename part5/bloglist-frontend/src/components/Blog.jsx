@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
-import Togglable from "./Togglable"
+import Togglable from './Togglable'
 
 const Blog = ({ thisBlog, user, showNotification, setBlogs }) => {
   const [blog, setBlog] = useState(thisBlog)
@@ -13,14 +14,14 @@ const Blog = ({ thisBlog, user, showNotification, setBlogs }) => {
         const id = await blogService.getUserId(user)
         setUserId(id)
       } catch (error) {
-        showNotification("could not get user id", "error")
+        showNotification('could not get user id', 'error')
       }
     }
     getUserId()
   }, [user])
 
   const handleLike = async () => {
-    const updatedBlog = await blogService.update({ ...blog, likes: blog.likes + 1})
+    const updatedBlog = await blogService.update({ ...blog, likes: blog.likes + 1 })
     setBlog(updatedBlog)
   }
 
@@ -41,7 +42,7 @@ const Blog = ({ thisBlog, user, showNotification, setBlogs }) => {
         }
       }
     } catch (error) {
-      showNotification("could not delete blog", "error")
+      showNotification('could not delete blog', 'error')
     }
   }
 
@@ -54,12 +55,19 @@ const Blog = ({ thisBlog, user, showNotification, setBlogs }) => {
             <p>{blog.url}</p>
             <p>likes: {blog.likes}<button onClick={handleLike}>like</button></p>
             {blog.user && <p>added by {blog.user.name}</p>}
-            {checkUserId() && <button onClick={handleDelete}>remove</button>}
+            {checkUserId() && <button id='remove-button' onClick={handleDelete}>remove</button>}
           </div>
         </Togglable>
       </div>
     </div>
   )
+}
+
+Blog.propTypes = {
+  thisBlog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  showNotification: PropTypes.func.isRequired,
+  setBlogs: PropTypes.func.isRequired,
 }
 
 export default Blog

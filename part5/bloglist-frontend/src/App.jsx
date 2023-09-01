@@ -54,13 +54,13 @@ const App = () => {
       const user = await loginService.login({
         username, password
       })
-      
+
       window.localStorage.setItem(
         'loggedBloglistUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
-      showNotification(`user ${username} logged in`, "info")
+      showNotification(`user ${username} logged in`, 'info')
       clearForm()
     } catch (exception) {
       showNotification('wrong credentials', 'error')
@@ -79,7 +79,7 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
-      showNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, "info")
+      showNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'info')
     } catch (exception) {
       showNotification(exception.message)
     }
@@ -104,14 +104,14 @@ const App = () => {
         <h2>blogs</h2>
         <Notification message={notification} error={error}/>
         <p>{user.name} logged in
-        <button
-          onClick={() => handleLogout()}>logout
-        </button><br/>
-        <br/></p>
+          <button
+            onClick={() => handleLogout()}>logout
+          </button><br/>
+          <br/></p>
         <Togglable buttonLabel="new blog" buttonHide="cancel" ref={blogFormRef}>
-        <BlogForm
-          createBlog={addBlog}
-        />
+          <BlogForm
+            createBlog={addBlog}
+          />
         </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} thisBlog={blog} user={user}

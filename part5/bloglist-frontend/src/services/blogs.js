@@ -25,10 +25,10 @@ const deleteBlog = async (blog) => {
     if (response.status === 204) {
       return true
     } else {
-      throw new Error("error deleting the blog")
+      throw new Error('error deleting the blog')
     }
   } catch (error) {
-    console.log("error occured while deleting blog")
+    console.log('error occured while deleting blog')
     return false
   }
 }
@@ -48,7 +48,7 @@ const getUserId = async (user) => {
     const userData = response.data.find((u => u.name === user.name))
     return userData.id
   } catch (error) {
-    console.log("error")
+    console.log('error')
     return null
   }
 }

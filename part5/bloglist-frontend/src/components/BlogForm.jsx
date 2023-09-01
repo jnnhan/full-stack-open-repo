@@ -27,6 +27,7 @@ const BlogForm = ({
         <div>
           title:
           <input
+            id='title'
             type="text"
             value={newTitle}
             name="title"
@@ -36,6 +37,7 @@ const BlogForm = ({
         <div>
           author
           <input
+            id='author'
             type="text"
             value={newAuthor}
             name="author"
@@ -45,15 +47,16 @@ const BlogForm = ({
         <div>
           url:
           <input
+            id='url'
             type="text"
             value={newUrl}
             name="url"
             onChange={e => setNewUrl(e.target.value)}
           />
         </div>
-        <button type="submit">create</button>
+        <button id='submit-button' type="submit">create</button>
       </form>
     </div>
-)}
+  )}
 
 export default BlogForm
